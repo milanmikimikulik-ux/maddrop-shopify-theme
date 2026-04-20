@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "hero": { "type": "hero-banner", "settings": {} },
+    "cans_counter": { "type": "cans-counter", "settings": {} }
+  },
+  "order": ["hero", "cans_counter"]
+}
