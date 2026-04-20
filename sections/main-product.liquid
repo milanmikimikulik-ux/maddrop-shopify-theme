@@ -1,17 +1,26 @@
-<section class="product-page" {{ section.shopify_attributes }}>
+<div class="product-page">
   <div class="product-page__gallery">
     {%- for image in product.images limit: 6 -%}
       <div class="product-gallery__item{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
-        <img src="{{ image | image_url: width: 900 }}" alt="{{ image.alt | escape }}"
-          class="product-gallery__img" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-          width="900" height="900">
+        <img
+          src="{{ image | image_url: width: 900 }}"
+          alt="{{ image.alt | escape }}"
+          class="product-gallery__img"
+          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+          width="900"
+          height="900"
+        >
       </div>
     {%- endfor -%}
     {%- if product.images.size > 1 -%}
       <div class="product-gallery__thumbs">
         {%- for image in product.images limit: 6 -%}
-          <button class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
-            onclick="setGalleryImage({{ forloop.index0 }})" aria-label="View image {{ forloop.index }}">
+          <button
+            class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+            onclick="setGalleryImage({{ forloop.index0 }})"
+            type="button"
+            aria-label="View image {{ forloop.index }}"
+          >
             <img src="{{ image | image_url: width: 120 }}" alt="" loading="lazy" width="120" height="120">
           </button>
         {%- endfor -%}
@@ -20,8 +29,11 @@
   </div>
 
   <div class="product-page__info">
-    <p class="product-page__vendor">{{ product.vendor }}</p>
+    {%- if section.settings.show_vendor -%}
+      <p class="product-page__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
     <h1 class="product-page__title">{{ product.title }}</h1>
+
     <div class="product-page__price" id="ProductPrice">
       {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
         <span class="price--sale">{{ product.selected_or_first_available_variant.price | money }}</span>
@@ -38,9 +50,13 @@
             <label class="variant-option__label">{{ option.name }}</label>
             <div class="variant-option__values">
               {%- for value in option.values -%}
-                <button class="variant-option__btn{% if option.selected_value == value %} is-active{% endif %}"
-                  data-option-name="{{ option.name }}" data-option-value="{{ value }}"
-                  onclick="selectVariantOption(this)">{{ value }}</button>
+                <button
+                  type="button"
+                  class="variant-option__btn{% if option.selected_value == value %} is-active{% endif %}"
+                  data-option-position="{{ option.position }}"
+                  data-option-value="{{ value | escape }}"
+                  onclick="selectVariantOption(this)"
+                >{{ value }}</button>
               {%- endfor -%}
             </div>
           </div>
@@ -51,67 +67,121 @@
     <div class="product-page__qty">
       <label for="ProductQty">Quantity</label>
       <div class="qty-selector">
-        <button type="button" onclick="changeQty(-1)" class="qty-btn" aria-label="Decrease quantity">-</button>
+        <button type="button" class="qty-btn" onclick="changeQty(-1)" aria-label="Decrease">-</button>
         <input type="number" id="ProductQty" value="1" min="1" max="99" class="qty-input" aria-label="Quantity">
-        <button type="button" onclick="changeQty(1)" class="qty-btn" aria-label="Increase quantity">+</button>
+        <button type="button" class="qty-btn" onclick="changeQty(1)" aria-label="Increase">+</button>
       </div>
     </div>
 
-    <form method="post" action="{{ routes.cart_add_url }}" id="AddToCartForm" class="product-page__form">
+    <form method="post" action="{{ routes.cart_add_url }}" id="AddToCartForm">
       <input type="hidden" name="id" id="VariantId" value="{{ product.selected_or_first_available_variant.id }}">
       <input type="hidden" name="quantity" id="FormQty" value="1">
-      <button type="submit" id="AddToCartBtn"
-        class="btn-primary product-page__atc{% unless product.selected_or_first_available_variant.available %} btn--disabled{% endunless %}"
-        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
-        {%- if product.selected_or_first_available_variant.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+      <button
+        type="submit"
+        id="AddToCartBtn"
+        class="btn-primary product-page__atc"
+        {%- unless product.selected_or_first_available_variant.available %} disabled{% endunless %}
+      >
+        {%- if product.selected_or_first_available_variant.available -%}
+          Add to Cart
+        {%- else -%}
+          Sold Out
+        {%- endif -%}
       </button>
     </form>
 
-    <div class="product-page__description rte">{{ product.description }}</div>
-
-    {%- assign product_variants_json = product.variants | json -%}
-    <script>
-      var productVariants = {{ product_variants_json }};
-      function setGalleryImage(index) {
-        document.querySelectorAll('.product-gallery__item').forEach(function(el, i) { el.classList.toggle('is-active', i === index); });
-        document.querySelectorAll('.product-gallery__thumb').forEach(function(el, i) { el.classList.toggle('is-active', i === index); });
-      }
-      function changeQty(d) {
-        var i = document.getElementById('ProductQty');
-        var f = document.getElementById('FormQty');
-        var v = Math.max(1, Math.min(99, parseInt(i.value) + d));
-        i.value = v; if (f) f.value = v;
-      }
-      document.getElementById('ProductQty').addEventListener('change', function() {
-        var f = document.getElementById('FormQty'); if (f) f.value = this.value;
-      });
-      function selectVariantOption(btn) {
-        var optionName = btn.getAttribute('data-option-name');
-        var optionValue = btn.getAttribute('data-option-value');
-        btn.closest('.variant-option__values').querySelectorAll('.variant-option__btn').forEach(function(b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
-        var selectedOptions = {};
-        document.querySelectorAll('.variant-option').forEach(function(opt) {
-          var active = opt.querySelector('.variant-option__btn.is-active');
-          if (active) selectedOptions[active.getAttribute('data-option-name')] = active.getAttribute('data-option-value');
-        });
-        var matched = productVariants.find(function(v) {
-          return v.options.every(function(opt, i) {
-            var key = 'option' + (i+1);
-            return Object.values(selectedOptions).includes(opt);
-          });
-        });
-        if (matched) {
-          document.getElementById('VariantId').value = matched.id;
-          document.getElementById('ProductPrice').innerHTML = '<span>' + (matched.price / 100).toFixed(2) + ' USD</span>';
-          var btn2 = document.getElementById('AddToCartBtn');
-          btn2.disabled = !matched.available;
-          btn2.textContent = matched.available ? 'Add to Cart' : 'Sold Out';
-        }
-      }
-    </script>
+    <div class="product-page__description rte">
+      {{ product.description }}
+    </div>
   </div>
-</section>
+</div>
+
+<script>
+(function() {
+  var productVariants = {{ product.variants | json }};
+
+  window.setGalleryImage = function(index) {
+    document.querySelectorAll('.product-gallery__item').forEach(function(el, i) {
+      el.classList.toggle('is-active', i === index);
+    });
+    document.querySelectorAll('.product-gallery__thumb').forEach(function(el, i) {
+      el.classList.toggle('is-active', i === index);
+    });
+  };
+
+  window.changeQty = function(delta) {
+    var input = document.getElementById('ProductQty');
+    var formInput = document.getElementById('FormQty');
+    var val = Math.max(1, Math.min(99, parseInt(input.value || 1) + delta));
+    input.value = val;
+    if (formInput) formInput.value = val;
+  };
+
+  document.getElementById('ProductQty').addEventListener('change', function() {
+    var f = document.getElementById('FormQty');
+    if (f) f.value = this.value;
+  });
+
+  window.selectVariantOption = function(btn) {
+    var pos = parseInt(btn.getAttribute('data-option-position'));
+    var val = btn.getAttribute('data-option-value');
+    btn.closest('.variant-option__values').querySelectorAll('.variant-option__btn').forEach(function(b) {
+      b.classList.remove('is-active');
+    });
+    btn.classList.add('is-active');
+
+    var selectedOptions = {};
+    document.querySelectorAll('.variant-option').forEach(function(opt) {
+      var active = opt.querySelector('.variant-option__btn.is-active');
+      if (active) {
+        var p = parseInt(active.getAttribute('data-option-position'));
+        selectedOptions[p] = active.getAttribute('data-option-value');
+      }
+    });
+
+    var matched = productVariants.find(function(v) {
+      return Object.keys(selectedOptions).every(function(p) {
+        return v['option' + p] === selectedOptions[p];
+      });
+    });
+
+    if (matched) {
+      document.getElementById('VariantId').value = matched.id;
+      var priceEl = document.getElementById('ProductPrice');
+      var price = (matched.price / 100).toLocaleString('en-US', { style: 'currency', currency: '{{ cart.currency.iso_code }}' });
+      priceEl.innerHTML = '<span>' + price + '</span>';
+      var atcBtn = document.getElementById('AddToCartBtn');
+      atcBtn.disabled = !matched.available;
+      atcBtn.textContent = matched.available ? 'Add to Cart' : 'Sold Out';
+    }
+  };
+
+  document.getElementById('AddToCartForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var id = document.getElementById('VariantId').value;
+    var qty = parseInt(document.getElementById('FormQty').value) || 1;
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, quantity: qty })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+      return fetch('/cart.js');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(cart) {
+      document.querySelectorAll('.header-cart').forEach(function(el) {
+        el.textContent = 'CART (' + cart.item_count + ')';
+      });
+      var btn = document.getElementById('AddToCartBtn');
+      var orig = btn.textContent;
+      btn.textContent = 'Added!';
+      setTimeout(function() { btn.textContent = orig; }, 2000);
+    });
+  });
+})();
+</script>
 
 {% schema %}
 {
@@ -119,7 +189,12 @@
   "tag": "section",
   "class": "section-product",
   "settings": [
-    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": true }
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    }
   ]
 }
 {% endschema %}
