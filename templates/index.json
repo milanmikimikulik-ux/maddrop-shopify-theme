@@ -1,7 +1,23 @@
 {
   "sections": {
-    "hero": { "type": "hero-banner", "settings": {} },
-    "cans_counter": { "type": "cans-counter", "settings": {} }
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "community": { "type": "nav_item", "settings": { "label": "Community", "link": "/pages/community" } },
+        "collab": { "type": "nav_item", "settings": { "label": "Collab", "link": "/pages/collab" } },
+        "inside": { "type": "nav_item", "settings": { "label": "What's inside", "link": "/collections/all" } }
+      },
+      "block_order": ["community", "collab", "inside"],
+      "settings": {}
+    },
+    "cans_counter": {
+      "type": "cans-counter",
+      "settings": {
+        "current_count": 0,
+        "goal_count": 1000,
+        "counter_text": "Hit 1,000 — we drop a free cans pack to 5 random subscribers"
+      }
+    }
   },
   "order": ["hero", "cans_counter"]
 }
