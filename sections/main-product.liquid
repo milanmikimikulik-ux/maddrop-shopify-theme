@@ -1,0 +1,125 @@
+<section class="product-page" {{ section.shopify_attributes }}>
+  <div class="product-page__gallery">
+    {%- for image in product.images limit: 6 -%}
+      <div class="product-gallery__item{% if forloop.first %} is-active{% endif %}" data-index="{{ forloop.index0 }}">
+        <img src="{{ image | image_url: width: 900 }}" alt="{{ image.alt | escape }}"
+          class="product-gallery__img" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+          width="900" height="900">
+      </div>
+    {%- endfor -%}
+    {%- if product.images.size > 1 -%}
+      <div class="product-gallery__thumbs">
+        {%- for image in product.images limit: 6 -%}
+          <button class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+            onclick="setGalleryImage({{ forloop.index0 }})" aria-label="View image {{ forloop.index }}">
+            <img src="{{ image | image_url: width: 120 }}" alt="" loading="lazy" width="120" height="120">
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="product-page__info">
+    <p class="product-page__vendor">{{ product.vendor }}</p>
+    <h1 class="product-page__title">{{ product.title }}</h1>
+    <div class="product-page__price" id="ProductPrice">
+      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+        <span class="price--sale">{{ product.selected_or_first_available_variant.price | money }}</span>
+        <s class="price--compare">{{ product.selected_or_first_available_variant.compare_at_price | money }}</s>
+      {%- else -%}
+        <span>{{ product.selected_or_first_available_variant.price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- unless product.has_only_default_variant -%}
+      <div class="product-page__variants">
+        {%- for option in product.options_with_values -%}
+          <div class="variant-option">
+            <label class="variant-option__label">{{ option.name }}</label>
+            <div class="variant-option__values">
+              {%- for value in option.values -%}
+                <button class="variant-option__btn{% if option.selected_value == value %} is-active{% endif %}"
+                  data-option-name="{{ option.name }}" data-option-value="{{ value }}"
+                  onclick="selectVariantOption(this)">{{ value }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="product-page__qty">
+      <label for="ProductQty">Quantity</label>
+      <div class="qty-selector">
+        <button type="button" onclick="changeQty(-1)" class="qty-btn" aria-label="Decrease quantity">-</button>
+        <input type="number" id="ProductQty" value="1" min="1" max="99" class="qty-input" aria-label="Quantity">
+        <button type="button" onclick="changeQty(1)" class="qty-btn" aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+
+    <form method="post" action="{{ routes.cart_add_url }}" id="AddToCartForm" class="product-page__form">
+      <input type="hidden" name="id" id="VariantId" value="{{ product.selected_or_first_available_variant.id }}">
+      <input type="hidden" name="quantity" id="FormQty" value="1">
+      <button type="submit" id="AddToCartBtn"
+        class="btn-primary product-page__atc{% unless product.selected_or_first_available_variant.available %} btn--disabled{% endunless %}"
+        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+        {%- if product.selected_or_first_available_variant.available -%}Add to Cart{%- else -%}Sold Out{%- endif -%}
+      </button>
+    </form>
+
+    <div class="product-page__description rte">{{ product.description }}</div>
+
+    {%- assign product_variants_json = product.variants | json -%}
+    <script>
+      var productVariants = {{ product_variants_json }};
+      function setGalleryImage(index) {
+        document.querySelectorAll('.product-gallery__item').forEach(function(el, i) { el.classList.toggle('is-active', i === index); });
+        document.querySelectorAll('.product-gallery__thumb').forEach(function(el, i) { el.classList.toggle('is-active', i === index); });
+      }
+      function changeQty(d) {
+        var i = document.getElementById('ProductQty');
+        var f = document.getElementById('FormQty');
+        var v = Math.max(1, Math.min(99, parseInt(i.value) + d));
+        i.value = v; if (f) f.value = v;
+      }
+      document.getElementById('ProductQty').addEventListener('change', function() {
+        var f = document.getElementById('FormQty'); if (f) f.value = this.value;
+      });
+      function selectVariantOption(btn) {
+        var optionName = btn.getAttribute('data-option-name');
+        var optionValue = btn.getAttribute('data-option-value');
+        btn.closest('.variant-option__values').querySelectorAll('.variant-option__btn').forEach(function(b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        var selectedOptions = {};
+        document.querySelectorAll('.variant-option').forEach(function(opt) {
+          var active = opt.querySelector('.variant-option__btn.is-active');
+          if (active) selectedOptions[active.getAttribute('data-option-name')] = active.getAttribute('data-option-value');
+        });
+        var matched = productVariants.find(function(v) {
+          return v.options.every(function(opt, i) {
+            var key = 'option' + (i+1);
+            return Object.values(selectedOptions).includes(opt);
+          });
+        });
+        if (matched) {
+          document.getElementById('VariantId').value = matched.id;
+          document.getElementById('ProductPrice').innerHTML = '<span>' + (matched.price / 100).toFixed(2) + ' USD</span>';
+          var btn2 = document.getElementById('AddToCartBtn');
+          btn2.disabled = !matched.available;
+          btn2.textContent = matched.available ? 'Add to Cart' : 'Sold Out';
+        }
+      }
+    </script>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Page",
+  "tag": "section",
+  "class": "section-product",
+  "settings": [
+    { "type": "checkbox", "id": "show_vendor", "label": "Show vendor", "default": true }
+  ]
+}
+{% endschema %}
