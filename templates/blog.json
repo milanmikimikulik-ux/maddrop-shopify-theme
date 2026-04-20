@@ -1,6 +1,11 @@
 {
   "sections": {
-    "main": { "type": "journal-page", "settings": { "articles_per_page": 9 } }
+    "main": {
+      "type": "journal-page",
+      "settings": {
+        "articles_per_page": 9
+      }
+    }
   },
   "order": ["main"]
 }
