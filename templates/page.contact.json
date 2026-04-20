@@ -1,14 +1,13 @@
 {
-  "sections": {
-    "main": {
-      "type": "contact-page",
-      "settings": {
-        "submit_text": "JOIN",
-        "location": "1456 Broadway
-New York, NY 10018",
-        "phone": "949.245.8870"
-      }
-    }
-  },
-  "order": ["main"]
+    "sections": {
+          "main": {
+                  "type": "contact-page",
+                  "settings": {
+                            "submit_text": "JOIN",
+                            "location": "New York, NY 10018",
+                            "phone": "949.245.8870"
+                  }
+          }
+    },
+    "order": ["main"]
 }
