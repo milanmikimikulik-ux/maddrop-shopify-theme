@@ -1,32 +1,39 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+<html lang="{{ request.locale.iso_code }}" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
   <meta name="theme-color" content="{{ settings.color_background }}">
+
   {%- if settings.favicon != blank -%}
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
   {%- endif -%}
+
   <title>
     {{ page_title }}
     {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
     {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
     {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
   </title>
+
   {%- if page_description -%}
     <meta name="description" content="{{ page_description | escape }}">
   {%- endif -%}
+
   {{ content_for_header }}
+
   {%- liquid
     assign body_font_bold = settings.font_body | font_modify: 'weight', 'bold'
     assign body_font_italic = settings.font_body | font_modify: 'style', 'italic'
   %}
+
   {% style %}
     {{ settings.font_heading | font_face: font_display: 'swap' }}
     {{ settings.font_body | font_face: font_display: 'swap' }}
     {{ body_font_bold | font_face: font_display: 'swap' }}
     {{ body_font_italic | font_face: font_display: 'swap' }}
+
     :root {
       --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
       --font-heading-style: {{ settings.font_heading.style }};
@@ -43,17 +50,24 @@
       --color-footer-text: {{ settings.color_footer_text }};
     }
   {% endstyle %}
+
   {{ 'base.css' | asset_url | stylesheet_tag }}
   {{ 'theme.css' | asset_url | stylesheet_tag }}
-  <script>document.documentElement.className = document.documentElement.className.replace('no-js','js');</script>
+
+  <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
 </head>
-<body class="gradient{% if settings.sticky_header %} header-sticky{% endif %}">
+
+<body class="template-{{ request.page_type }}{% if settings.sticky_header %} header-sticky{% endif %}">
   <a class="skip-to-content-link visually-hidden" href="#MainContent">Skip to content</a>
-  {% sections 'header-group' %}
+
+  {% section 'header' %}
+
   <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
-  {% sections 'footer-group' %}
+
+  {% section 'footer' %}
+
   {{ 'theme.js' | asset_url | script_tag }}
 </body>
 </html>
