@@ -1,0 +1,33 @@
+{%- assign pct = section.settings.current_count | times: 100 | divided_by: section.settings.goal_count -%}
+<section class="cans-counter" {{ section.shopify_attributes }}>
+  <div class="cans-counter__inner">
+    <div class="cans-counter__top">
+      <span class="cans-counter__label">CANS SOLD</span>
+      <span class="cans-counter__numbers">{{ section.settings.current_count }} / {{ section.settings.goal_count }}</span>
+    </div>
+    <div class="cans-counter__bar-wrap">
+      <div class="cans-counter__bar">
+        <div class="cans-counter__fill" style="width:{{ pct }}%"></div>
+        <div class="cans-counter__dot" style="left:{{ pct }}%"></div>
+      </div>
+    </div>
+    <p class="cans-counter__text">
+      {{ section.settings.counter_text }}
+      <span class="accent">{{ pct }}%</span>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cans Counter",
+  "tag": "section",
+  "class": "section-cans-counter",
+  "settings": [
+    { "type": "range", "id": "current_count", "min": 0, "max": 10000, "step": 1, "default": 0, "label": "Current cans sold" },
+    { "type": "range", "id": "goal_count", "min": 100, "max": 10000, "step": 100, "default": 1000, "label": "Goal" },
+    { "type": "text", "id": "counter_text", "label": "Description", "default": "Hit 1,000 — we drop a free cans pack to 5 random subscribers" }
+  ],
+  "presets": [{ "name": "Cans Counter" }]
+}
+{% endschema %}
