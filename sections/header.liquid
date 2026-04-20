@@ -1,0 +1,59 @@
+<header class="site-header{% if section.settings.sticky %} site-header--sticky{% endif %}" id="SiteHeader">
+  <div class="header-inner">
+    <nav class="header-nav header-nav--left" aria-label="Primary navigation">
+      <a href="{{ routes.root_url }}collections/all" class="nav-link">Shop</a>
+      <a href="{{ routes.root_url }}pages/collab" class="nav-link">Collab</a>
+      <a href="{{ routes.root_url }}blogs/journal" class="nav-link">Journal</a>
+      <a href="{{ routes.root_url }}pages/contact" class="nav-link">Contact</a>
+    </nav>
+
+    <a href="{{ routes.root_url }}" class="header-logo" aria-label="{{ shop.name }}">
+      {%- if section.settings.logo != blank -%}
+        <img
+          src="{{ section.settings.logo | image_url: width: section.settings.logo_width }}"
+          alt="{{ shop.name }}"
+          width="{{ section.settings.logo_width }}"
+          height="auto"
+          loading="eager"
+        >
+      {%- else -%}
+        <span class="header-logo__text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <div class="header-nav header-nav--right">
+      <a href="{{ routes.account_url }}" class="nav-link">Account</a>
+      <a href="{{ routes.cart_url }}" class="nav-link header-cart" aria-label="Cart">
+        CART ({{ cart.item_count }})
+      </a>
+    </div>
+
+    <button class="header-mobile-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="MobileMenu"
+      onclick="this.setAttribute('aria-expanded', document.getElementById('MobileMenu').classList.toggle('is-open'))">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+  </div>
+
+  <nav id="MobileMenu" class="mobile-menu" aria-label="Mobile navigation">
+    <a href="{{ routes.root_url }}collections/all" class="mobile-menu__link">Shop</a>
+    <a href="{{ routes.root_url }}pages/collab" class="mobile-menu__link">Collab</a>
+    <a href="{{ routes.root_url }}blogs/journal" class="mobile-menu__link">Journal</a>
+    <a href="{{ routes.root_url }}pages/contact" class="mobile-menu__link">Contact</a>
+    <a href="{{ routes.account_url }}" class="mobile-menu__link">Account</a>
+    <a href="{{ routes.cart_url }}" class="mobile-menu__link">Cart ({{ cart.item_count }})</a>
+  </nav>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo image" },
+    { "type": "range", "id": "logo_width", "min": 50, "max": 300, "step": 10, "default": 150, "unit": "px", "label": "Logo width" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true }
+  ]
+}
+{% endschema %}
