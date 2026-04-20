@@ -1,0 +1,66 @@
+<section class="hero-banner" id="HeroBanner">
+  {%- if section.settings.video_url != blank -%}
+    <video class="hero-banner__video" autoplay muted loop playsinline
+      poster="{{ section.settings.video_poster | image_url: width: 1920 }}">
+      <source src="{{ section.settings.video_url }}" type="video/mp4">
+    </video>
+  {%- elsif section.settings.image != blank -%}
+    <img src="{{ section.settings.image | image_url: width: 1920 }}"
+      alt="{{ section.settings.image.alt | escape }}"
+      class="hero-banner__image" loading="eager" width="1920" height="1080">
+  {%- else -%}
+    <div class="hero-banner__placeholder"></div>
+  {%- endif -%}
+
+  <div class="hero-banner__overlay"></div>
+
+  {%- if section.settings.hero_logo != blank -%}
+    <div class="hero-banner__logo">
+      <img src="{{ section.settings.hero_logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="200">
+    </div>
+  {%- endif -%}
+
+  <div class="hero-banner__nav">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'nav_item' -%}
+        <a href="{{ block.settings.link }}" class="hero-nav-link" {{ block.shopify_attributes }}>
+          {{ block.settings.label }}
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    { "type": "image_picker", "id": "hero_logo", "label": "Hero center logo / icon" },
+    { "type": "image_picker", "id": "image", "label": "Background image (fallback)" },
+    { "type": "image_picker", "id": "video_poster", "label": "Video poster image" },
+    { "type": "text", "id": "video_url", "label": "Video URL (.mp4)", "info": "Upload to Shopify Files and paste URL here" }
+  ],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Navigation link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Community" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "blocks": [
+        { "type": "nav_item", "settings": { "label": "Community" } },
+        { "type": "nav_item", "settings": { "label": "Collab" } },
+        { "type": "nav_item", "settings": { "label": "What's inside" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
