@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": { "type": "collab-page", "settings": {
+      "hero_title": "Drink Mad. Get Paid.",
+      "hero_label": "(The inside track for creators)",
+      "join_title": "Join the club",
+      "benefits_title": "More Than a Commission. A Seat at the Table.",
+      "apply_btn_text": "Join the club"
+    } }
+  },
+  "order": ["main"]
+}
