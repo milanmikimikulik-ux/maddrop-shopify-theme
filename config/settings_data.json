@@ -1,0 +1,13 @@
+{
+  "current": {
+    "color_background": "#F2EFE9",
+    "color_text": "#1a1a1a",
+    "color_accent": "#ff2d78",
+    "color_button_bg": "#1a1a1a",
+    "color_button_text": "#ffffff",
+    "color_footer_bg": "#0d0d0d",
+    "color_footer_text": "#f2efe9",
+    "logo_width": 150,
+    "sticky_header": true
+  }
+}
