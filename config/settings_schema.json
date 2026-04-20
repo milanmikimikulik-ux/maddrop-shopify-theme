@@ -1,0 +1,51 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "MadDrop",
+    "theme_version": "1.0.0",
+    "theme_author": "MadDrop",
+    "theme_documentation_url": "https://maddrop.co",
+    "theme_support_url": "https://maddrop.co/contact"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Background color", "default": "#F2EFE9" },
+      { "type": "color", "id": "color_text", "label": "Text color", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_accent", "label": "Accent color", "default": "#ff2d78" },
+      { "type": "color", "id": "color_button_bg", "label": "Button background", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_button_text", "label": "Button text", "default": "#ffffff" },
+      { "type": "color", "id": "color_footer_bg", "label": "Footer background", "default": "#0d0d0d" },
+      { "type": "color", "id": "color_footer_text", "label": "Footer text", "default": "#f2efe9" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "font_picker", "id": "font_heading", "label": "Heading font", "default": "figtree_n9" },
+      { "type": "font_picker", "id": "font_body", "label": "Body font", "default": "figtree_n4" }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo image" },
+      { "type": "range", "id": "logo_width", "min": 50, "max": 300, "step": 10, "default": 150, "unit": "px", "label": "Logo width" },
+      { "type": "checkbox", "id": "sticky_header", "label": "Sticky header", "default": true }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon image" }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_twitter", "label": "Twitter/X URL" }
+    ]
+  }
+]
