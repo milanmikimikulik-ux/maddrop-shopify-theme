@@ -1,0 +1,12 @@
+<article class="article-page">
+  <h1>{{ article.title }}</h1>
+  <p>{{ article.published_at | date: "%B %d, %Y" }}</p>
+  <div class="rte">{{ article.content }}</div>
+  <a href="{{ blog.url }}" class="btn">Back to Journal</a>
+</article>
+{% schema %}
+{
+  "name": "Article Page",
+  "settings": []
+}
+{% endschema %}
