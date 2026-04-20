@@ -1,0 +1,55 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-newsletter">
+      <p class="footer-newsletter__label">{{ section.settings.newsletter_title }}</p>
+      {% form 'customer', id: 'FooterNewsletterForm' %}
+        <div class="footer-newsletter__form">
+          <input type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}"
+            class="footer-newsletter__input" required aria-label="Email address">
+          <button type="submit" class="footer-newsletter__btn">{{ section.settings.newsletter_btn }}</button>
+        </div>
+        {% if form.posted_successfully? %}
+          <p class="footer-success">Thanks for subscribing!</p>
+        {% endif %}
+      {% endform %}
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-links__col">
+        <p class="footer-links__heading">(Customer Care)</p>
+        <a href="{{ routes.account_url }}" class="footer-link">Account</a>
+        <a href="{{ routes.root_url }}pages/our-store" class="footer-link">Our Store</a>
+        <a href="{{ routes.root_url }}pages/faq" class="footer-link">FAQ</a>
+      </div>
+      <div class="footer-links__col">
+        <p class="footer-links__heading">(Navigate)</p>
+        <a href="{{ routes.root_url }}collections/all" class="footer-link">Shop</a>
+        <a href="{{ routes.root_url }}pages/collab" class="footer-link">Collab</a>
+        <a href="{{ routes.root_url }}blogs/journal" class="footer-link">Journal</a>
+        <a href="{{ routes.root_url }}pages/contact" class="footer-link">Contact</a>
+      </div>
+      <div class="footer-links__col">
+        <p class="footer-links__heading">(Other)</p>
+        <a href="{{ routes.root_url }}policies/privacy-policy" class="footer-link">Privacy</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-wordmark">{{ section.settings.brand_name }}</div>
+    <p class="footer-copyright">{{ section.settings.brand_name }} &copy; {{ 'now' | date: '%Y' }}</p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "MAD DROP™" },
+    { "type": "text", "id": "newsletter_title", "label": "Newsletter section title", "default": "SUBSCRIBE TO OUR NEWSLETTER" },
+    { "type": "text", "id": "newsletter_placeholder", "label": "Email placeholder", "default": "Your email" },
+    { "type": "text", "id": "newsletter_btn", "label": "Newsletter button text", "default": "JOIN" }
+  ]
+}
+{% endschema %}
