@@ -1,0 +1,73 @@
+<section class="contact-page" {{ section.shopify_attributes }}>
+  <div class="contact-page__left">
+    <h1 class="contact-page__title">Contact</h1>
+
+    {% form 'contact', id: 'ContactForm' %}
+      {%- if form.posted_successfully? -%}
+        <div class="form-success">Thanks! We'll get back to you shortly.</div>
+      {%- elsif form.errors -%}
+        <div class="form-errors">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <div class="contact-form__row">
+        <div class="contact-form__field">
+          <label for="ContactName">NAME</label>
+          <input type="text" id="ContactName" name="contact[name]"
+            placeholder="Your Name" value="{{ form.name }}" autocomplete="name">
+        </div>
+        <div class="contact-form__field">
+          <label for="ContactEmail">EMAIL</label>
+          <input type="email" id="ContactEmail" name="contact[email]"
+            placeholder="Your Email" value="{{ form.email }}" required autocomplete="email">
+        </div>
+      </div>
+
+      <div class="contact-form__field contact-form__field--full">
+        <label for="ContactMessage">MESSAGE</label>
+        <textarea id="ContactMessage" name="contact[body]" rows="5"
+          placeholder="Your Message">{{ form.body }}</textarea>
+      </div>
+
+      <button type="submit" class="btn-primary contact-form__submit">
+        {{ section.settings.submit_text }}
+      </button>
+    {% endform %}
+
+    <div class="contact-info">
+      {%- if section.settings.location != blank -%}
+        <div class="contact-info__item">
+          <p class="contact-info__label">(LOCATION)</p>
+          <p class="contact-info__value">{{ section.settings.location }}</p>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.phone != blank -%}
+        <div class="contact-info__item">
+          <p class="contact-info__label">(PHONE)</p>
+          <p class="contact-info__value">{{ section.settings.phone }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="contact-page__right">
+    {%- if section.settings.store_image != blank -%}
+      <img src="{{ section.settings.store_image | image_url: width: 900 }}"
+        alt="{{ section.settings.store_image.alt | escape }}" loading="eager" width="900">
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "tag": "section",
+  "class": "section-contact",
+  "settings": [
+    { "type": "text", "id": "submit_text", "label": "Submit button text", "default": "JOIN" },
+    { "type": "text", "id": "location", "label": "Location address", "default": "1456 Broadway\nNew York, NY 10018" },
+    { "type": "text", "id": "phone", "label": "Phone number", "default": "949.245.8870" },
+    { "type": "image_picker", "id": "store_image", "label": "Store photo (right side)" }
+  ],
+  "presets": [{ "name": "Contact Page" }]
+}
+{% endschema %}
