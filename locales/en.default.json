@@ -1,0 +1,23 @@
+{
+  "general": {
+    "meta": { "page": "Page {{ page }}" }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content"
+  },
+  "sections": {
+    "cart_notification": {
+      "heading": "Added to cart!",
+      "view_cart": "View cart",
+      "continue_shopping": "Continue shopping"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "quantity": { "label": "Quantity" }
+    }
+  },
+  "blogs": { "article": { "by_author": "By {{ author }}" } }
+}
