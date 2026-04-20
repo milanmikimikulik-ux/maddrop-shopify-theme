@@ -1,0 +1,48 @@
+{% paginate blog.articles by section.settings.articles_per_page %}
+<section class="journal-page" {{ section.shopify_attributes }}>
+  <div class="journal-header">
+    <a href="javascript:history.back()" class="journal-back" aria-label="Back">&lt;</a>
+  </div>
+
+  <div class="journal-featured">
+    <p class="journal-featured__label">(Featured)</p>
+    <div class="journal-grid">
+      {%- for article in blog.articles -%}
+        <article class="journal-card{% if forloop.first %} journal-card--featured{% endif %}">
+          <a href="{{ article.url }}" class="journal-card__link">
+            {%- if article.image -%}
+              <div class="journal-card__image-wrap">
+                <img src="{{ article.image | image_url: width: 700 }}"
+                  alt="{{ article.image.alt | escape }}"
+                  class="journal-card__image" loading="lazy" width="700">
+              </div>
+            {%- endif -%}
+            <div class="journal-card__info">
+              <h2 class="journal-card__title">{{ article.title }}</h2>
+              <span class="journal-card__arrow">&rarr;</span>
+              <time class="journal-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                {{ article.published_at | date: '%m.%d.%Y' }}
+              </time>
+            </div>
+          </a>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+    <div class="pagination">{{ paginate | default_pagination }}</div>
+  {%- endif -%}
+</section>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Journal Page",
+  "tag": "section",
+  "class": "section-journal",
+  "settings": [
+    { "type": "range", "id": "articles_per_page", "min": 3, "max": 24, "step": 3, "default": 9, "label": "Articles per page" }
+  ]
+}
+{% endschema %}
